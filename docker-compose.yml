@@ -1,0 +1,29 @@
+services:
+  web:
+    container_name: odoo-19
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - mydb
+    ports:
+      - "8075:8069"
+    environment:
+      - HOST=mydb
+      - USER=odoo
+      - PASSWORD=myodoo
+    volumes:
+      - ./odoo-web-data:/var/lib/odoo
+      - ./addons:/mnt/extra-addons
+      - ./odoo-con:/etc/odoo
+
+  mydb:
+    container_name: db-19
+    image: postgres:15
+    restart: unless-stopped
+    shm_size: '128mb'
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=myodoo
+      - POSTGRES_USER=odoo
+    volumes:
+      - ./postgresql:/var/lib/postgresql/data
